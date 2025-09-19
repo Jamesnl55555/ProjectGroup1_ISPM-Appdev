@@ -1,16 +1,30 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\InventoryController;
 use Illuminate\Foundation\Application;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+
+
 Route::get('/', function () {
+    $product = Product::all();
+    return view('inventory', compact('product'));
+})->name('home');
+Route::get('/addproduct', [InventoryController::class, 'addProduct'])->name('addproduct');
+Route::post('/add-item', [InventoryController::class, 'addItem'])->name('add-item');
+Route::post('/update-item/{id}', [InventoryController::class, 'updateItem'])->name('update-item');
+Route::delete('/delete-item/{id}', [InventoryController::class, 'deleteItem'])->name('delete-item');
+
+// Below is the original '/' route code commented out, it has the login and register
+// Route::get('/', function () {
     
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register')]);
-});
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register')]);
+// });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
