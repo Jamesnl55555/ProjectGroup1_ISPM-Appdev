@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('quantity');
-            $table->decimal('price', 10, 2);
+            $table->decimal('price_per_piece', 10, 2);
+            $table->decimal('overall_price', 10, 2);
             // $table->string('file_path');
             $table->timestamps();
         });

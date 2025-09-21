@@ -11,7 +11,8 @@ class Product extends Model
     protected $fillable = [
         'name', 
         'quantity', 
-        'price', 
+        'price_per_piece',
+        'overall_price' 
         // 'file_path'
     ];
 }

@@ -15,7 +15,10 @@ Route::get('/', function () {
 })->name('home');
 Route::get('/addproduct', [InventoryController::class, 'addProduct'])->name('addproduct');
 Route::post('/add-item', [InventoryController::class, 'addItem'])->name('add-item');
-Route::post('/update-item/{id}', [InventoryController::class, 'updateItem'])->name('update-item');
+Route::get('/edit-product/{id}', [InventoryController::class, 'editProduct'])->name('edit-product');
+Route::put('/update-product/{id}', [InventoryController::class, 'updateProduct'])->name('update-product');
+Route::put('/update-item-inc/{id}', [InventoryController::class, 'updateItemInc'])->name('update-item-inc');
+Route::put('/update-item-dec/{id}', [InventoryController::class, 'updateItemDec'])->name('update-item-dec');
 Route::delete('/delete-item/{id}', [InventoryController::class, 'deleteItem'])->name('delete-item');
 
 // Below is the original '/' route code commented out, it has the login and register
