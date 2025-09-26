@@ -9,17 +9,14 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('user_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2);
-            $table->string('category')->nullable();
-            $table->boolean('is_archived')->default(false);
-            // $table->string('file_path');
+            $table->string('action');
+            $table->text('changed_data');
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('user_history');
     }
 };

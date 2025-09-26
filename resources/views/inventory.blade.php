@@ -7,6 +7,22 @@
 </head>
 <body>
     <h1>Inventory Management</h1>
+    <div>
+        <h1>Set Capital</h1>
+        Current Capital: ₱{{ $capitals->capital ?? '0.00' }}
+        <form method="POST" action="{{route('add-capital')}}">
+            @csrf
+            <input type="number" name="amount" placeholder="0"/>
+            <input type="select" name="type" style="display:none;">
+                <option value="initial" selected>Initial</option>
+                <option value="additional">Additional</option>
+                <option value="withdrawal">Withdrawal</option>
+            </input> 
+            <input type="text" name="notes" style="display:none;" value="Initial Capital"/>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
     @if(isset($product))
         <h2>Inventory List</h2>
         <ul>
@@ -14,8 +30,8 @@
                 <li>
                     <strong>{{ $item->name }}</strong><br>
                     Quantity: {{ $item->quantity }}<br>
-                    Price per piece: ${{ $item->price_per_piece }}<br>
-                    Overall price: ${{$item->overall_price}}<br>
+                    Price per piece: ₱{{ $item->price_per_piece }}<br>
+                    Overall price: ₱{{$item->overall_price}}<br>
                     <!-- <img src="{{ Storage::url($item->file_path) }}" alt="{{ $item->name }}" width="100"> -->
                     
                     <form method="POST" action="{{route('update-item-inc', $item->id)}}">
@@ -47,7 +63,5 @@
         </ul>
     @endif
     <a href="/addproduct" >Add New Product</a>
-    
-
 </body>
 </html>

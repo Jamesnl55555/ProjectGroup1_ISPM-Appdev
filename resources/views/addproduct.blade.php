@@ -11,6 +11,11 @@
         <input type="string" name="name" placeholder="Product Name" required>
         <input type="number" name="quantity" placeholder="Quantity" required>
         <input type="number" name="price" placeholder="Price" required>
+        <input type="string" name="category" placeholder="Category" required>
+        <input type="select" name="is_archived" placeholder="Archive Status" required>
+            <option value="0" selected>Not Archived</option>
+            <option value="1">Archived</option>
+        </input>
         <!-- <input type="file" name="picture" accept="image/*" required> -->
         <button type="submit">Add Product</button>
         <button type="reset">Clear</button>

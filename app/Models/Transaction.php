@@ -1,18 +1,19 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Product extends Model
+class Transaction extends Model
 {
-    use HasFactory;
+     use HasFactory;
     
-     public function productHistories(): HasMany
+     public function transactionHistories(): HasMany
     {
-        return $this->hasMany(ProductHistory::class);
+        return $this->hasMany(TransactionHistory::class);
     }
 
     public function user(): BelongsTo
@@ -22,11 +23,8 @@ class Product extends Model
 
     protected $fillable = [
         'user_id',
-        'name', 
         'quantity', 
         'price',
-        'category',
-        'is_archived'
-        // 'file_path'
+        'total_amount',
     ];
 }
