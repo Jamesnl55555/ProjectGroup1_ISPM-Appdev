@@ -5,8 +5,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\InventoryController;
 use Illuminate\Foundation\Application;
 use App\Models\Product;
-use App\Models\User;
 use App\Models\Transaction;
+use App\Models\ProductHistory;
+use App\Models\UserHistory;
+use App\Models\TransactionHistory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,11 +21,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function (Request $request) {
-    $user = $request->user()->load(['products', 'transactions', 'userHistories']);
-    $transaction = Transaction::latest()->take(50)->get()->load(['transactionHistories']);
-    $product = Product::latest()->take(50)->get()->load(['productHistories']);
+    $user = $request->user()->load(['products']);
+    $tRecords = Transaction::latest()->take(50)->get();
+    $tHistory = TransactionHistory::latest()->take(50)->get();
+    $pHistory = ProductHistory::latest()->take(50)->get();
+    $uHistory = UserHistory::latest()->take(50)->get();
     
-    return Inertia::render('Dashboard', ['user' => $user, 'transaction' => $transaction, 'product' => $product]);
+    return Inertia::render('Dashboard', ['user' => $user, 'tHistory' => $tHistory, 'tRecords'=> $tRecords, 'pHistory' => $pHistory, 'uHistory' => $uHistory]);
     })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -41,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/update-item-inc/{id}', [InventoryController::class, 'updateItemInc'])->name('update-iteminc');
     Route::put('/update-item-dec/{id}', [InventoryController::class, 'updateItemDec'])->name('update-itemdec');
     Route::get('/edit-product/{id}', [InventoryController::class, 'editProduct'])->name('edit-product');
-    Route::post('/update-product/{id}', [InventoryController::class, 'updateProduct'])->name('update-product');
+    Route::put('/update-product/{id}', [InventoryController::class, 'updateProduct'])->name('update-product');
     Route::post('/edit-item/{id}', [InventoryController::class, 'editItem'])->name('edit-item');
     Route::post('/delete-item/{id}', [InventoryController::class, 'deleteItem'])->name('delete-item');
     Route::post('/add-capital', [InventoryController::class, 'addCapital'])->name('add-capital');

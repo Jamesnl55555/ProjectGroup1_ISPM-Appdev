@@ -1,6 +1,6 @@
 import React from "react";
 import {Link, router } from "@inertiajs/react";
-
+import EditProduct from "./EditProduct";
 export default function Inventory({ products = []}) {
   
   const inc = (id, qty) =>
@@ -25,11 +25,13 @@ export default function Inventory({ products = []}) {
                 <br />
                 Price: ₱{item.price}
                 <br />
+                Category: {item.category}
+                <br />
 
                 <button onClick={() => inc(item.id, item.quantity)}>+</button>
                 <button onClick={() => dec(item.id, item.quantity)}>-</button>
 
-                <Link href={route("edit-product", item.id)}>Update Product</Link>
+                <EditProduct product={item} />
 
                 <button onClick={() => del(item.id)}>Delete Product</button>
               </li>

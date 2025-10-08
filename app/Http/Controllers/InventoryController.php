@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Capital;
+use App\Models\ProductHistory;
+use App\Models\Transaction;
+use App\Models\TransactionHistory;
 use App\Models\User;
 
 class InventoryController extends Controller
@@ -31,8 +34,15 @@ class InventoryController extends Controller
             'user_id' => $userid,
             // 'file_path' => $filePath,
         ]);
+
+        ProductHistory::create([
+            'product_name' => $product->name,
+            'action' => 'Added ' . $validatedData['name'],
+            'changed_data' => 'none',
+        ]);
         return redirect()->route('dashboard');
     }
+
     public function updateItemInc($id)
     {
         $validatedData = request()->validate([
@@ -42,8 +52,28 @@ class InventoryController extends Controller
         $i = $validatedData['quantity'] + 1;
         $item->quantity = $i;
         $item->save();
+
+        $user = User::find($item->user_id);
+        $user->capital = $user->capital - $item->price;
+        $user->save();
+
+        Transaction::create([
+            'user_name' => $user->name,
+            'product_name' => $item->name,
+            'quantity' => 1,
+            'price' => $item->price,
+            'total_amount' => $item->price,
+        ]);
+
+        ProductHistory::create([
+            'product_name' => $item->name,
+            'action' => 'quantity increased',
+            'changed_data' => 'quantity increased to ' . $item->quantity,
+        ]);
+              
         return redirect()->route('dashboard')->with('success', 'Item updated successfully.');
     }
+
     public function updateItemDec($id)
     {
         $validatedData = request()->validate([
@@ -53,11 +83,26 @@ class InventoryController extends Controller
         $i = $validatedData['quantity'] - 1;
         $item->quantity = $i;
         $item->save();
+
+        $user = User::find($item->user_id);
+        $user->capital = $user->capital + $item->price;
+        $user->save();
+
+        ProductHistory::create([
+            'product_name' => $item->name,
+            'action' => 'quantity decreased',
+            'changed_data' => 'quantity decreased to ' . $item->quantity,
+        ]);
+
+        Transaction::create([
+            'user_name' => $user->name,
+            'product_name' => $item->name,
+            'quantity' => -1,
+            'price' => $item->price,
+            'total_amount' => -$item->price,
+        ]);
+
         return redirect()->route('dashboard')->with('success', 'Item updated successfully.');
-    }
-    public function editProduct($id){
-        $product = Product::find($id);
-        return view('editproduct', compact('product'));
     }
 
     public function updateProduct(Request $request, $id){
@@ -75,6 +120,14 @@ class InventoryController extends Controller
         $product = Product::findOrFail($id);
         // $filePath = request()->file('file')->store('public/images');
 
+        $changedData = [];
+        
+        foreach (['name', 'quantity', 'price', 'category', 'is_archived'] as $field) {
+            if ($product->$field != $validatedData[$field]) {
+                $changedData[] = ucfirst($field) . " changed from '{$product->$field}' to '{$validatedData[$field]}'";
+            }
+        }
+
         $product->update([
             'name' => $validatedData['name'],
             'quantity' => $validatedData['quantity'],
@@ -85,14 +138,35 @@ class InventoryController extends Controller
 
             // 'file_path' => $filePath,
         ]);
+
+            
+        foreach (['name', 'quantity', 'price', 'category', 'is_archived'] as $field) {
+            if ($product->$field != $validatedData[$field]) {
+                $changedData[] = ucfirst($field) . " changed from '{$product->$field}' to '{$validatedData[$field]}'";
+            }
+        }
+
+        if (!empty($changedData)) {
+        ProductHistory::create([
+            'product_name' => $product->name,
+            'action' => 'updated product',
+            'changed_data' => implode(', ', $changedData),
+        ]);
+    }
         
-        return redirect()->route('dashboard')->with('product', $product);
+        return redirect()->route('dashboard');
     }
     
     public function deleteItem($id)
     {
     $product = Product::findOrFail($id);    
+    ProductHistory::create([
+            'product_name' => $product->name,
+            'action' => 'deleted product',
+            'changed_data' => 'deleted ' . $product->name,
+        ]);
     $product->delete();
+
     return redirect()->route('dashboard')->with('success', 'Item deleted successfully.');
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transaction_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
+            $table->string('user_name');
             $table->string('action');
             $table->text('changed_data');
             $table->timestamps();

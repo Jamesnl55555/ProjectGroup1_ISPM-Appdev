@@ -11,7 +11,7 @@ class Transaction extends Model
 {
      use HasFactory;
     
-     public function transactionHistories(): HasMany
+     public function transactionhistories(): HasMany
     {
         return $this->hasMany(TransactionHistory::class);
     }
@@ -22,7 +22,8 @@ class Transaction extends Model
     }
 
     protected $fillable = [
-        'user_id',
+        'user_name',
+        'product_name',
         'quantity', 
         'price',
         'total_amount',

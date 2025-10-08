@@ -10,11 +10,6 @@ class Product extends Model
 {
     use HasFactory;
     
-     public function productHistories(): HasMany
-    {
-        return $this->hasMany(ProductHistory::class);
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

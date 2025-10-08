@@ -10,14 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProductHistory extends Model
 {
     use HasFactory;
-    
-     public function user(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
-    }
 
     protected $fillable = [
-        'product_id',
+        'product_name',
         'action',
         'changed_data',
     ];

@@ -23,16 +23,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Product::class);
     }
-    
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(Transaction::class);
-    }
-
-     public function userHistories(): HasMany
-    {
-        return $this->hasMany(UserHistory::class);
-    }
 
     protected $fillable = [
         'name',

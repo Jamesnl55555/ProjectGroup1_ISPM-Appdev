@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->string('product_name');
             $table->string('action');
             $table->text('changed_data');
             $table->timestamps();

@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 
-export default function UserHistory({tHistory=[]}){
+export default function TransactionHistory({tHistory=[]}){
+    if (!tHistory || tHistory.length === 0) {
+    return <h1>No Transaction History Available</h1>;
+    }
     return(
     <div>
-    {tHistory.length > 0 && (
-        <>
         <h1>Transaction History</h1>
         {tHistory.map((history) => (
             <li key={history.id}>
@@ -12,13 +13,11 @@ export default function UserHistory({tHistory=[]}){
                 <br/>
                 <strong>Changed Data: </strong> {history.changed_data}
                 <br/>
-                <strong>Changed at: </strong> {history.date}
+                <strong>Changed at: </strong> {history.updated_at}
             </li>
 
         ))}
         <h1>=========================</h1>
-        </>
-    )}
     </div>
     );
 }

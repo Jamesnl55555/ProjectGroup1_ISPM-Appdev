@@ -16,7 +16,7 @@ class TransactionHistory extends Model
     }
 
     protected $fillable = [
-        'transaction_id',
+        'user_name',
         'action',
         'changed_data',
     ];
