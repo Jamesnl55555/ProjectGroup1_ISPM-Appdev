@@ -21,7 +21,7 @@ class Product extends Model
         'quantity', 
         'price',
         'category',
-        'is_archived'
-        // 'file_path'
+        'is_archived',
+        'file_path'
     ];
 }

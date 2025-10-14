@@ -9,11 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TransactionHistory extends Model
 {
     use HasFactory;
-    
-     public function user(): BelongsTo
-    {
-        return $this->belongsTo(Transaction::class);
-    }
 
     protected $fillable = [
         'user_name',

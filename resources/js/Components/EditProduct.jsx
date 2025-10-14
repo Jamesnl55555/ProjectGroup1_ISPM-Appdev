@@ -6,22 +6,23 @@ const [visible, setVisible] = useState(false);
 const {
     data: productData,
     setData: setProduct,
-    put: putProduct,
+    post: postProduct,
     processing: processingEditProduct,
     reset: resetForm,
   } = useForm({
-    name: product.name,
-    quantity: product.quantity,
-    price: product.price,
-    category: product.category,
-    is_archived: product.is_archived,
-    // picture: null,
+    name: product.name || "",
+    quantity: product.quantity || "",
+    price: product.price || "" ,
+    category: product.category || "",
+    is_archived: product.is_archived || false,
+    file: product.file_path || null,
   });
 
   const submitProducts = (e) => {
     e.preventDefault();
-    putProduct(route("update-product", product.id), {
-      onSuccess: () => resetForm(),
+    postProduct(route("update-product", product.id), {
+      forceFormData: true,
+      onSuccess: () => {resetForm(), setVisible(false)},
     });
   };  
 
@@ -36,7 +37,7 @@ return (
             Close
         </button>
         
-        <form onSubmit={submitProducts}> 
+        <form onSubmit={submitProducts} encType="multipart/form-data"> 
         <h1>Product Name: </h1>
         <input type="text" name="name" value={productData.name} onChange={(e) => setProduct("name", e.target.value)}/>
         <h1>Quantity: </h1>
@@ -49,8 +50,9 @@ return (
         <select name="is_archived" value={productData.is_archived} onChange={(e) => setProduct("is_archived", e.target.value === "true")}>
             <option value="false">Not Archived</option>
             <option value="true">Archived</option>
+        
         </select>
-        {/* <input type="file" name="picture" accept="image/*" required> */}
+        <input type="file" name="file" accept="image/*" onChange={(e) => setProduct("file", e.target.files[0])}/>
         <button type="submit" disabled={processingEditProduct}>Edit Product</button>
         <button type="button" onClick={resetForm}>Clear</button>
         </form>

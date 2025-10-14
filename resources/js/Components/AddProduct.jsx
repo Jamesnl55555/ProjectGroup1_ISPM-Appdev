@@ -15,13 +15,13 @@ const {
     price: "",
     category: "",
     is_archived: false,
-    // picture: null,
+    file: null,
   });
 
   const submitProducts = (e) => {
     e.preventDefault();
     postProduct(route("add-item"), {
-      onSuccess: () => resetForm(),
+      onSuccess: () => {resetForm(), setVisible(false)},
     });
   };  
 return (
@@ -49,7 +49,7 @@ return (
             <option value="false">Not Archived</option>
             <option value="true">Archived</option>
         </select>
-        {/* <input type="file" name="picture" accept="image/*" required> */}
+        <input type="file" name="file" accept="image/*" onChange={(e) => setProduct("file", e.target.files[0])} required />
         <button type="submit" disabled={processingProduct}>Add Product</button>
         <button type="button" onClick={resetForm}>Clear</button>
         </form>

@@ -11,16 +11,6 @@ class Transaction extends Model
 {
      use HasFactory;
     
-     public function transactionhistories(): HasMany
-    {
-        return $this->hasMany(TransactionHistory::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     protected $fillable = [
         'user_name',
         'product_name',

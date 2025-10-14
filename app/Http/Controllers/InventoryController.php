@@ -8,6 +8,7 @@ use App\Models\ProductHistory;
 use App\Models\Transaction;
 use App\Models\TransactionHistory;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class InventoryController extends Controller
 {
@@ -18,13 +19,13 @@ class InventoryController extends Controller
             'price' => 'required|numeric',
             'category' => 'nullable|string|max:255',
             'is_archived' => 'required|boolean',
-            // 'file' => 'required|image',
+            'file' => 'required|image',
         ]);
         $userid = $request->user()->id;
         if ($product = Product::where('name', $validatedData['name'])->first()) {
             return redirect()->back()->withErrors(['name' => 'Product with this name already exists.']);
         }
-        // $filePath = request()->file('file')->store('public/images');
+        $filePath = request()->file('file')->store('images', 'public');
         $product = Product::create([
             'name' => $validatedData['name'],
             'quantity' => $validatedData['quantity'],
@@ -32,7 +33,7 @@ class InventoryController extends Controller
             'category' => $validatedData['category'],
             'is_archived' => $validatedData['is_archived'],
             'user_id' => $userid,
-            // 'file_path' => $filePath,
+            'file_path' => 'storage/' . $filePath,
         ]);
 
         ProductHistory::create([
@@ -114,13 +115,20 @@ class InventoryController extends Controller
             'price' => 'required|numeric',
             'category' => 'nullable|string|max:255',
             'is_archived' => 'required|boolean',
-
-            // 'file' => 'required|image',
+            'file' => 'nullable|image',
         ]);
-        $product = Product::findOrFail($id);
-        // $filePath = request()->file('file')->store('public/images');
-
         $changedData = [];
+        $product = Product::findOrFail($id);
+        if ($request->hasFile('file')) {
+            
+        if ($product->file_path && Storage::disk('public')->exists(str_replace('storage/', '', $product->file_path))) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $product->file_path));
+        }
+        $path = $request->file('file')->store('images', 'public');
+        $product->file_path = 'storage/' . $path;
+        $changedData[] = "Picture updated";
+        }
+
         
         foreach (['name', 'quantity', 'price', 'category', 'is_archived'] as $field) {
             if ($product->$field != $validatedData[$field]) {
@@ -128,23 +136,17 @@ class InventoryController extends Controller
             }
         }
 
-        $product->update([
+        $product->fill([
             'name' => $validatedData['name'],
             'quantity' => $validatedData['quantity'],
             'price' => $validatedData['price'],
             'category' => $validatedData['category'],
             'user_id' => $userid,
             'is_archived' => $validatedData['is_archived'],
-
-            // 'file_path' => $filePath,
+            'file_path' => $product->file_path,
         ]);
-
-            
-        foreach (['name', 'quantity', 'price', 'category', 'is_archived'] as $field) {
-            if ($product->$field != $validatedData[$field]) {
-                $changedData[] = ucfirst($field) . " changed from '{$product->$field}' to '{$validatedData[$field]}'";
-            }
-        }
+        
+        $product->save();
 
         if (!empty($changedData)) {
         ProductHistory::create([
@@ -153,7 +155,6 @@ class InventoryController extends Controller
             'changed_data' => implode(', ', $changedData),
         ]);
     }
-        
         return redirect()->route('dashboard');
     }
     
