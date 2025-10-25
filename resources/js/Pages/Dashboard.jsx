@@ -6,8 +6,10 @@ import MakeCapital from '@/Components/MakeCapital';
 import ProductHistory from '@/Components/ProductHistory';
 import UserHistory from '@/Components/UserHistory';
 import TransactionHistory from '@/Components/TransactionHistory';
+import Transaction from '@/Components/Transaction';
 import { MantineProvider } from '@mantine/core';
 import Menu from '@/Components/Menu';
+import Import from '@/Components/Import';
 import TransactionRecords from '@/Components/TransactionRecords';
 
 export default function Dashboard({user, tHistory, pHistory, uHistory, tRecords}) {
@@ -34,6 +36,7 @@ export default function Dashboard({user, tHistory, pHistory, uHistory, tRecords}
                             <div className="p-6 text-gray-900">
                                 You're logged in!
                             </div>
+                            <Import />
                             <h1>Inventory Management</h1>
                             <h1>Capital: {user.capital}</h1>
                             <Inventory products={user.products} />
@@ -52,6 +55,9 @@ export default function Dashboard({user, tHistory, pHistory, uHistory, tRecords}
                             <h1>==================================</h1>
 
                             <TransactionRecords tRecords={tRecords} />
+                            <h1>==================================</h1>
+                            <Transaction products={user.products} />
+                            
                         </div>
                         
                     </div>

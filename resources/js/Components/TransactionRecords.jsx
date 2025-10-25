@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 export default function TransactionRecords({tRecords=[]}){
     if (!tRecords || tRecords.length === 0) {
     return <h1>No Transaction Records Available</h1>;
@@ -7,6 +8,7 @@ export default function TransactionRecords({tRecords=[]}){
         <h1>Transaction Records</h1>
         {tRecords.map((records) => (
             <li key={records.id}>
+                <Link href={`/user/${records.id}`}>
                 <strong>User: </strong> {records.user_name}
                 <br/>
                 <strong>Quantity: </strong> {records.quantity}
@@ -14,8 +16,8 @@ export default function TransactionRecords({tRecords=[]}){
                 <strong>Price: </strong> {records.price}
                 <br/>
                 <strong>Total Amount: </strong> {records.total_amount}
+                </Link>
             </li>
-
         ))}
         <h1>=========================</h1>
     </div>

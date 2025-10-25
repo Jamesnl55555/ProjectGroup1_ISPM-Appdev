@@ -8,6 +8,7 @@ use App\Models\ProductHistory;
 use App\Models\Transaction;
 use App\Models\TransactionHistory;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class InventoryController extends Controller
@@ -22,7 +23,7 @@ class InventoryController extends Controller
             'file' => 'required|image',
         ]);
         $userid = $request->user()->id;
-        if ($product = Product::where('name', $validatedData['name'])->first()) {
+        if ($product = Product::where('name', $validatedData['name'])->first() ) {
             return redirect()->back()->withErrors(['name' => 'Product with this name already exists.']);
         }
         $filePath = request()->file('file')->store('images', 'public');
@@ -41,6 +42,43 @@ class InventoryController extends Controller
             'action' => 'Added ' . $validatedData['name'],
             'changed_data' => 'none',
         ]);
+        return redirect()->route('dashboard');
+    }
+
+    public function checkout(Request $request){
+        
+        Log::info('Incoming request raw:', [$request->getContent()]);
+        Log::info('Incoming request:', $request->all());
+
+        $validatedData = $request->validate([
+            'cart' => 'required|array',
+            'cart.*.id' => 'required|integer',
+            'cart.*.name' => 'required|string',
+            'cart.*.quantity' => 'required|integer',
+            'cart.*.price' => 'required|numeric',
+        ]);
+        $user = $request->user();
+        foreach($validatedData['cart'] as $item){
+
+            Transaction::create([
+                'user_name' => $user->name,
+                'product_name' => $item['name'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'total_amount' => $item['price'] * $item['quantity']
+            ]);
+
+            $product = Product::find($item['id']);
+            $i = $product->quantity - $item['quantity'];
+            $product->quantity = $i;
+            $product->save();
+
+            ProductHistory::create([
+            'product_name' => $item['name'],
+            'action' => 'quantity decreased',
+            'changed_data' => 'quantity decreased by ' . $item['quantity'],
+        ]);
+        }
         return redirect()->route('dashboard');
     }
 
@@ -170,6 +208,12 @@ class InventoryController extends Controller
 
     return redirect()->route('dashboard')->with('success', 'Item deleted successfully.');
     }
+    public function deletePHistory($id)
+    {
+    $history = ProductHistory::findOrFail($id);    
+    $history->delete();
+    return redirect()->route('dashboard');
+    }
 
     public function addCapital(Request $request){
         $validatedData = $request->validate([
@@ -190,7 +234,7 @@ class InventoryController extends Controller
 
         $user->update(['capital' => $newAmount]);
 
-        return redirect()->route('dashboard')->with('success', 'Capital added successfully.');
+        return redirect()->route('dashboard');
     }
 }
 

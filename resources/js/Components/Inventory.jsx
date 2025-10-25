@@ -28,7 +28,7 @@ export default function Inventory({ products = []}) {
                 Category: {item.category}
                 <br />
                 Picture: <img src={`/${item.file_path}`} alt={item.name} style={{ width: "100px", height: "100px", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"}/>
-
+                <br/>
                 <button onClick={() => inc(item.id, item.quantity)}>+</button>
                 <button onClick={() => dec(item.id, item.quantity)}>-</button>
 

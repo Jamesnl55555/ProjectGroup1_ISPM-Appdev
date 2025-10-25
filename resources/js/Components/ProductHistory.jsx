@@ -1,5 +1,5 @@
 import React from "react";
-
+import DeletePHistoryButton from "./DeletePHistoryButton";
 export default function ProductHistory({pHistory}){
     
     if (!pHistory || pHistory.length === 0) {
@@ -8,10 +8,10 @@ export default function ProductHistory({pHistory}){
 
 
     return(
-    <div>
+    <div key='product-history'>
     <h1>Product History</h1>
     {pHistory.map((history) => (
-    <>
+
     <div key={history.id}>    
         <br/>
         <strong>Action: </strong> {history.action}
@@ -19,8 +19,9 @@ export default function ProductHistory({pHistory}){
         <strong>Changed Data: </strong> {history.changed_data}
         <br/>
         <strong>Changed at: </strong> {history.updated_at}
+        <br/>
+        <DeletePHistoryButton id={history.id} />
     </div>
-    </>
     ))}
     </div>
     );
